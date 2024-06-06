@@ -33,6 +33,15 @@ class Personagens(db.Model):
 def index():
     return render_template('index.html')
 
+
+@app.route('/lista_personagens')
+def lista_personagens():
+    # Recupera todos os registros da tabela Exemplo e os passa para o template
+    personagens = Personagens.query.all()
+
+    return render_template('lista_personagens.html', personagens=personagens)
+
+
 @app.route('/adicionar_personagem', methods=['GET', 'POST'])
 def adicionar_personagem():
     if request.method == 'POST':
@@ -48,31 +57,33 @@ def adicionar_personagem():
         db.session.add(novo_personagem)
         db.session.commit()
 
-        return redirect(url_for('index'))
+        return redirect(url_for('lista_personagens'))
     else:
         return render_template('adicionar_personagem.html')
     
 
-@app.route('/lista_personagens')
-def lista_personagens():
-    # Recupera todos os registros da tabela Exemplo e os passa para o template
-    personagens = Personagens.query.all()
+@app.route('/editar_personagem/<int:id>', methods=['GET', 'POST'])
+def editar_personagem(id):
+    personagem = Personagens.query.get(id)
+    if request.method == 'POST':
+        personagem.nomePersonagem = request.form['nome']
+        personagem.dataNascimento = datetime.strptime(request.form['data_nascimento'], '%Y-%m-%d').date()
+        personagem.aparicao = request.form['aparicao']
+        personagem.imagem = request.form['imagem']
+        db.session.commit()
+        return redirect(url_for('lista_personagens'))
+    else:
+        return render_template('editar_personagem.html', personagem=personagem)
 
-    return render_template('lista_personagens.html', personagens=personagens)
 
-@app.route('/editar_personagem')
-def editar_personagem():
-    # Recupera todos os registros da tabela Exemplo e os passa para o template
-    personagens = Personagens.query.all()
+@app.route('/excluir_personagem/<int:id>')
+def excluir_personagem(id):
+    personagem = Personagens.query.get(id)
 
-    return render_template('editar_personagem.html', personagens=personagens)
+    db.session.delete(personagem)
+    db.session.commit()
+    return redirect(url_for('lista_personagens'))
 
-@app.route('/excluir_personagem')
-def excluir_personagem():
-    # Recupera todos os registros da tabela Exemplo e os passa para o template
-    personagens = Personagens.query.all()
-
-    return render_template('excluir_personagem.html', personagens=personagens)
 
 if __name__ == "__main__":
   with app.app_context():

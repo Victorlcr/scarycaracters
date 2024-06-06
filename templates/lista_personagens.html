@@ -12,8 +12,8 @@
                     <p><strong>Data de Nascimento:</strong> {{ personagem.dataNascimento }}</p>
                     <p><strong>Data de Cadastro:</strong> {{ personagem.dataCadastro }}</p>
                     <p><strong>Aparição:</strong> {{ personagem.aparicao }}</p>
-                    <button><a href="{{ url_for('editar_personagem') }}">Editar</a></button>
-                    <button><a href="{{ url_for('excluir_personagem') }}">Excluir</a></button>
+                    <button><a href="/editar_personagem/{{personagem.idPersonagem}}">Editar</a></button>
+                    <button><a href="/excluir_personagem/{{personagem.idPersonagem}}">Excluir</a></button>
                 </div>
             </div>
         </div>
