@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spooky Scary Skeleton</title>
+</head>
+<body>
+    <h1>Teste</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Data de Nascimento</th>
+                <th>Data de Cadastro</th>
+                <th>Aparição</th>
+                <th>Imagem</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for personagem in personagens %}
+                <tr>
+                    <td>{{ personagem.nomePersonagem }}</td>
+                    <td>{{ personagem.dataNascimento }}</td>
+                    <td>{{ personagem.dataCadastro }}</td>
+                    <td>{{ personagem.aparicao }}</td>
+                    <td>{{ personagem.imagem }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
