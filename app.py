@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spookyCaracters.db'
@@ -9,6 +9,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
+#Banco de dados
 class Personagens(db.Model):
     __tablename__ = 'personagens'
 
@@ -26,20 +27,52 @@ class Personagens(db.Model):
         self.aparicao = aparicao
         self.imagem = imagem
 
-@app.route('/teste')
-def teste():
-    # Adiciona um novo registro à tabela Personagens
-    data_nascimento = datetime.strptime('19/4/1987', '%d/%m/%Y').date()
-    novo_exemplo = Personagens(nomePersonagem="Exemplo de string", dataNascimento=data_nascimento, dataCadastro=date.today(), aparicao='123', imagem='foto')
-    
-    db.session.add(novo_exemplo)
-    db.session.commit()
 
+#Rotas
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/adicionar_personagem', methods=['GET', 'POST'])
+def adicionar_personagem():
+    if request.method == 'POST':
+        nome = request.form['nome']
+        data_nascimento = datetime.strptime(request.form['data_nascimento'], '%Y-%m-%d').date()
+        aparicao = request.form['aparicao']
+        imagem = request.form['imagem']
+
+        # Obtém a data e hora atual em UTC
+        data_cadastro = datetime.now(timezone.utc)
+
+        novo_personagem = Personagens(nomePersonagem=nome, dataNascimento=data_nascimento, dataCadastro=data_cadastro, aparicao=aparicao, imagem=imagem)
+        db.session.add(novo_personagem)
+        db.session.commit()
+
+        return redirect(url_for('index'))
+    else:
+        return render_template('adicionar_personagem.html')
+    
+
+@app.route('/lista_personagens')
+def lista_personagens():
     # Recupera todos os registros da tabela Exemplo e os passa para o template
     personagens = Personagens.query.all()
 
-    return render_template('teste.html', personagens=personagens)
+    return render_template('lista_personagens.html', personagens=personagens)
 
+@app.route('/editar_personagem')
+def editar_personagem():
+    # Recupera todos os registros da tabela Exemplo e os passa para o template
+    personagens = Personagens.query.all()
+
+    return render_template('editar_personagem.html', personagens=personagens)
+
+@app.route('/excluir_personagem')
+def excluir_personagem():
+    # Recupera todos os registros da tabela Exemplo e os passa para o template
+    personagens = Personagens.query.all()
+
+    return render_template('excluir_personagem.html', personagens=personagens)
 
 if __name__ == "__main__":
   with app.app_context():

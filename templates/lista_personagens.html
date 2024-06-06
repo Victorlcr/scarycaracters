@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Lista de personagens assustadores</h1>
+<div class="row">
+    {% for personagem in personagens %}
+        <div class="col-md-4">
+            <div class="thumbnail">
+                <img src="{{ personagem.imagem }}" alt="{{ personagem.nomePersonagem }}" class="img-fluid">
+                <div class="caption">
+                    <h3>{{ personagem.nomePersonagem }}</h3>
+                    <p><strong>Data de Nascimento:</strong> {{ personagem.dataNascimento }}</p>
+                    <p><strong>Data de Cadastro:</strong> {{ personagem.dataCadastro }}</p>
+                    <p><strong>Aparição:</strong> {{ personagem.aparicao }}</p>
+                    <button><a href="{{ url_for('editar_personagem') }}">Editar</a></button>
+                    <button><a href="{{ url_for('excluir_personagem') }}">Excluir</a></button>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock content %}
